@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Category{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="step-indicator">
+    <span class="active"></span><span class="active"></span><span></span>
+  </div>
+  {% if lang == "st" %}
+    <h1>Khetha Bothata</h1>
+    <p>Bothata ke bofe boo u batlang ho bo tlaleha?</p>
+  {% else %}
+    <h1>Choose Problem Type</h1>
+    <p>What kind of problem do you want to report?</p>
+  {% endif %}
+  <form method="post">
+    {% for key, labels in categories.items() %}
+      <label style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem;border:1.5px solid var(--border);border-radius:8px;margin-bottom:0.5rem;cursor:pointer;">
+        <input type="radio" name="category" value="{{ key }}" required style="width:auto;margin:0;">
+        {{ labels[lang] }}
+      </label>
+    {% endfor %}
+    <button type="submit" class="btn btn-block" style="margin-top:1rem;">
+      {% if lang == "st" %}Tsoela pele →{% else %}Continue →{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

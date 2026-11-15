@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Details{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="step-indicator">
+    <span class="active"></span><span class="active"></span><span class="active"></span>
+  </div>
+  {% if lang == "st" %}
+    <h1>Hlalosa Bothata</h1>
+    <p><strong>Mofuta:</strong> {{ categories[category]["st"] }}</p>
+  {% else %}
+    <h1>Describe the Problem</h1>
+    <p><strong>Type:</strong> {{ categories[category]["en"] }}</p>
+  {% endif %}
+  <form method="post">
+    <label for="description">
+      {% if lang == "st" %}Tlhaloso e khutšoane{% else %}Short description{% endif %}
+    </label>
+    <textarea id="description" name="description" rows="3" maxlength="300"
+      placeholder="{% if lang == 'st' %}Mohlala: Pompo ha e sa sebetse ho tloha maobane{% else %}Example: Water pump not working since yesterday{% endif %}"></textarea>
+
+    <label for="location">
+      {% if lang == "st" %}Sebaka / Motse{% else %}Location / Village{% endif %}
+    </label>
+    <input type="text" id="location" name="location" maxlength="120"
+      placeholder="{% if lang == 'st' %}Mohlala: Ha Maja, haufi le kereke{% else %}Example: Ha Maja, near the church{% endif %}">
+
+    <label for="phone">
+      {% if lang == "st" %}Nomoro ea mohala (bakeng sa SMS){% else %}Phone number (for SMS reply){% endif %}
+    </label>
+    <input type="tel" id="phone" name="phone" maxlength="15"
+      placeholder="5xxxxxxx or +2665xxxxxxx" required>
+
+    <button type="submit" class="btn btn-block">
+      {% if lang == "st" %}Romela tlaleho{% else %}Submit Report{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

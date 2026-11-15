@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Tsebisa{% endblock %} – Community Reporting</title>
+  <style>
+    :root {
+      --primary: #1a5f2a;
+      --primary-dark: #0d3d18;
+      --accent: #f0b429;
+      --bg: #f7f9f7;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #5a5a5a;
+      --border: #d0d7d0;
+      --success: #0d7a3f;
+      --danger: #b91c1c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    header a { color: white; text-decoration: none; font-weight: 600; }
+    header nav a { margin-left: 1.25rem; font-weight: 400; opacity: 0.9; font-size: 0.95rem; }
+    header nav a:hover { opacity: 1; text-decoration: underline; }
+    .logo { font-size: 1.25rem; letter-spacing: 0.5px; }
+    .logo span { color: var(--accent); }
+    main { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary-dark); }
+    h2 { font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--primary); }
+    p { margin-bottom: 0.85rem; color: var(--muted); }
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-block { display: block; width: 100%; margin-top: 0.5rem; }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .btn-outline:hover { background: var(--primary); color: white; }
+    .btn-accent { background: var(--accent); color: #1a1a1a; }
+    .btn-accent:hover { background: #d9a017; }
+    label { display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.95rem; }
+    select, input[type="text"], input[type="tel"], textarea {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      background: white;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,95,42,0.15);
+    }
+    .ussd-box {
+      background: #0f172a;
+      color: #4ade80;
+      font-family: "Courier New", monospace;
+      padding: 1.25rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 1rem 0;
+      white-space: pre-wrap;
+    }
+    .ref-box {
+      background: #ecfdf5;
+      border: 2px solid var(--success);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      margin: 1.25rem 0;
+    }
+    .ref-box .ref {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--success);
+      letter-spacing: 2px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 0.65rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f0f4f0; font-weight: 600; color: var(--primary-dark); }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-received { background: #dbeafe; color: #1e40af; }
+    .badge-in_progress { background: #fef3c7; color: #92400e; }
+    .badge-closed { background: #d1fae5; color: #065f46; }
+    .flash { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .lang-switch { display: flex; gap: 0.75rem; margin: 1rem 0; }
+    .lang-switch label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.85rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .lang-switch input { width: auto; margin: 0; }
+    .lang-switch label:has(input:checked) {
+      border-color: var(--primary);
+      background: #ecfdf5;
+    }
+    .step-indicator {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1.25rem;
+    }
+    .step-indicator span {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+    .step-indicator span.active { background: var(--primary); }
+    @media (max-width: 500px) {
+      main { padding: 1rem 0.75rem 2rem; }
+      .card { padding: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">Tse<span>bisa</span></a>
+    <nav>
+      <a href="/report">Report</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/guide">Guide</a>
+    </nav>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    Tsebisa Pilot • DIIC3110 ICT4D • Limkokwing University • 2026<br>
+    Built for Lesotho communities – feature-phone friendly
+  </footer>
+</body>
+</html>
