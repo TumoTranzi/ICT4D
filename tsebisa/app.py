@@ -35,6 +35,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             reference TEXT UNIQUE NOT NULL,
+            submission_channel TEXT DEFAULT 'Website',
             category TEXT NOT NULL,
             description TEXT,
             location TEXT,
@@ -118,8 +119,8 @@ def report_details():
 
         conn = get_db()
         conn.execute(
-            "INSERT INTO reports (reference, category, description, location, phone, language, status, created_at) VALUES (?,?,?,?,?,?,?,?)",
-            (ref, category, description, location, phone, lang, "received", now)
+            "INSERT INTO reports (reference, submission_channel, category, description, location, phone, language, status, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+            (ref, 'Website', category, description, location, phone, lang, "received", now)
         )
         conn.commit()
         conn.close()
@@ -136,7 +137,6 @@ def normalize_status_filter(status_value):
     if status_value in STATUS_LABELS:
         return status_value
     return "all"
-
 
 @app.route("/dashboard")
 def dashboard():
@@ -181,18 +181,29 @@ def ussd_api():
     Placeholder endpoint for real USSD gateway (Africa's Talking style).
     In production this would parse sessionId, phoneNumber, text, etc.
     """
-    data = request.get_json() or {}
-    # For now just acknowledge
+    # For the demo, we simulate a complete USSD report submission
+    # so you can see 'USSD' in the dashboard.
+    ref = generate_reference()
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO reports (reference, submission_channel, category, description, location, phone, language, status, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+        (ref, 'USSD', 'water', 'Simulated USSD Report', 'Ha Makoa', '+26650000000', 'st', 'received', now)
+    )
+    conn.commit()
+    conn.close()
+
     return jsonify({
         "status": "ok",
-        "message": "Tsebisa USSD endpoint ready. Connect a real gateway here.",
-        "received": data
+        "message": "USSD report simulated successfully",
+        "reference": ref
     })
 
 @app.route("/api/reports")
 def api_reports():
     conn = get_db()
-    rows = conn.execute("SELECT reference, category, status, created_at FROM reports ORDER BY created_at DESC LIMIT 50").fetchall()
+    rows = conn.execute("SELECT reference, submission_channel, category, status, created_at FROM reports ORDER BY created_at DESC LIMIT 50").fetchall()
     conn.close()
     return jsonify([dict(r) for r in rows])
 
@@ -212,4 +223,7 @@ if __name__ == "__main__":
     print("Partner dashboard:  http://127.0.0.1:5000/dashboard")
     print("User guide:         http://127.0.0.1:5000/guide")
     print("=" * 50)
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    
+    # Required for Render deployment
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)
