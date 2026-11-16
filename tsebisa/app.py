@@ -187,19 +187,25 @@ def guide():
     return render_template("guide.html")
 
 # -------------------------------------------------
-# Startup and Reset
+# Force Reset Route for Render
 # -------------------------------------------------
-if __name__ == "__main__":
-    # Safely drop tables and recreate for the demo
+@app.route("/force-reset-db")
+def force_reset_db():
     try:
         conn = get_db()
         conn.execute("DROP TABLE IF EXISTS reports")
         conn.execute("DROP TABLE IF EXISTS feedback_log")
         conn.commit()
         conn.close()
+        init_db()
+        return "Database successfully reset! <br><br><a href='/dashboard'>Go to Dashboard</a>"
     except Exception as e:
-        print(f"Could not drop tables: {e}")
-        
+        return f"Error resetting database: {e}"
+
+# -------------------------------------------------
+# Startup
+# -------------------------------------------------
+if __name__ == "__main__":
     init_db()
     print("=" * 50)
     print("Tsebisa Pilot Server starting...")
