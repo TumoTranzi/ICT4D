@@ -216,6 +216,14 @@ def guide():
 
 # -------------------------------------------------
 if __name__ == "__main__":
+    # FORCE RESET: Delete old database on startup for pilot demo
+    if os.path.exists(DB_PATH):
+        try:
+            os.remove(DB_PATH)
+            print("Old database deleted.")
+        except Exception as e:
+            print(f"Could not delete database: {e}")
+            
     init_db()
     print("=" * 50)
     print("Tsebisa Pilot Server starting...")
